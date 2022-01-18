@@ -1,22 +1,25 @@
-﻿using System;
+﻿using FruitFightLauncher.Helpers;
+using FruitFightLauncher.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace FruitFightLauncher
 {
-    static class Program
+    class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FruitFightLauncher());
+            Task.Run(async () => { await Start(); }).Wait();
+        }
+
+        private static async Task Start()
+        {
+            List<Release> releases = await ApiHelper.GetReleasesAsync();
+            Release latestRelease = releases.OrderByDescending(x => x.Id).FirstOrDefault();
+
+            FileHelper fileHelper = new FileHelper();
         }
     }
 }
