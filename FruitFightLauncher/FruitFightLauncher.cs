@@ -23,6 +23,8 @@ namespace FruitFightLauncher
         {
             List<Release> releases = await ApiHelper.GetReleasesAsync();
             Release latestRelease = releases.OrderByDescending(x => x.Id).FirstOrDefault();
+
+            FileHelper fileHelper = new FileHelper();
         }
     }
 }
