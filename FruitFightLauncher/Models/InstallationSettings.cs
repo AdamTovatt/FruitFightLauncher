@@ -13,7 +13,7 @@ namespace FruitFightLauncher.Models
         public bool GameInstalled { get; set; }
 
         [JsonProperty("gameVersionId")]
-        public int GameVersionId { get; set; }
+        public long GameVersionId { get; set; }
 
         public string ToJson()
         {
