@@ -19,6 +19,10 @@ namespace FruitFightLauncher.Helpers
 
         public static async Task<string> GetAsync(string uri)
         {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
             HttpRequestMessage request = new HttpRequestMessage()
             {
                 Headers = { { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0" }, { HttpRequestHeader.Accept.ToString(), "application/json" } },

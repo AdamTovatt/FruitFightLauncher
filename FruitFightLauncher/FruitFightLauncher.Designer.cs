@@ -35,7 +35,7 @@ namespace FruitFightLauncher
             // statusText
             // 
             this.statusText.BackColor = System.Drawing.Color.Transparent;
-            this.statusText.Font = new System.Drawing.Font("Unkempt", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.statusText.Font = new System.Drawing.Font("Courier New", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusText.ForeColor = System.Drawing.Color.White;
             this.statusText.Location = new System.Drawing.Point(12, 184);
             this.statusText.Name = "statusText";
