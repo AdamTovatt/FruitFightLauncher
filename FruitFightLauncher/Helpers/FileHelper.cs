@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -30,13 +31,15 @@ namespace FruitFightLauncher.Helpers
             }
         }
 
+        public string GameInstallDirectory { get { return Path.Combine(appdataPath, sakurDirectoryName, gameInstallDirectoryName); } }
+
         private const string sakurDirectoryName = "Sakur";
         private const string gameInstallDirectoryName = "FruitFightGame";
         private const string launcherInstallDirectoryName = "FruitFightLauncher";
 
         private string appdataPath;
         private string settingsPath;
-        private InstallationSettings settings;
+        public InstallationSettings Settings { get; set; }
 
         public FileHelper()
         {
@@ -47,24 +50,71 @@ namespace FruitFightLauncher.Helpers
             {
                 InstallLauncher();
             }
+
+            Settings = LoadSettings();
+
+            if (Settings == null)
+            {
+                Settings = new InstallationSettings();
+                SaveSettings();
+            }
         }
 
         public InstallationSettings LoadSettings()
         {
-            string json = File.ReadAllText(settingsPath);
-            return InstallationSettings.FromJson(json);
+            if (File.Exists(settingsPath))
+            {
+                string json = File.ReadAllText(settingsPath);
+                return InstallationSettings.FromJson(json);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public void SaveSettings()
         {
-            if (settings != null)
+            if (Settings != null)
             {
-                File.WriteAllText(settingsPath, settings.ToJson());
+                File.WriteAllText(settingsPath, Settings.ToJson());
             }
+        }
+
+        public async Task<string> DownloadGame(Release release)
+        {
+            AssureBaseDirectory();
+
+            string gameDirectory = Path.Combine(appdataPath, sakurDirectoryName, gameInstallDirectoryName);
+
+            if (!Directory.Exists(gameDirectory))
+            {
+                Directory.CreateDirectory(gameDirectory);
+            }
+
+            return await ApiHelper.DownloadFileAsync(release.Assets.First().BrowserDownloadUrl, Path.Combine(GameInstallDirectory, "ffbuild.zip"));
+        }
+
+        public async Task InstallGame(Release release, string savedFile)
+        {
+            string installationDirectory = Path.Combine(GameInstallDirectory, "FFBuild");
+
+            if (Directory.Exists(installationDirectory)) //clean up
+                Directory.Delete(installationDirectory, true);
+
+            await Task.Run(() => { ZipFile.ExtractToDirectory(savedFile, GameInstallDirectory); });
+
+            Settings.GameInstalled = true;
+            Settings.GameVersionId = release.Id;
+            SaveSettings();
+
+            File.Delete(savedFile);
         }
 
         private void InstallLauncher()
         {
+            AssureBaseDirectory();
+
             string launcherDirectory = Path.Combine(appdataPath, sakurDirectoryName, launcherInstallDirectoryName);
 
             if (!Directory.Exists(launcherDirectory))
