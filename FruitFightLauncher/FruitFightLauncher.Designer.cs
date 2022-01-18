@@ -29,6 +29,7 @@ namespace FruitFightLauncher
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FruitFightLauncher));
             this.statusText = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -52,6 +53,7 @@ namespace FruitFightLauncher
             this.ClientSize = new System.Drawing.Size(684, 231);
             this.Controls.Add(this.statusText);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FruitFightLauncher";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Fruit Fight Launcher";
