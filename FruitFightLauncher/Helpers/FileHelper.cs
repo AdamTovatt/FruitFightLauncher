@@ -81,7 +81,7 @@ namespace FruitFightLauncher.Helpers
             }
         }
 
-        public async Task<string> DownloadGame(Release release)
+        public async Task<string> DownloadGame(Release release, ProgressReporter progressReporter)
         {
             AssureBaseDirectory();
 
@@ -92,7 +92,7 @@ namespace FruitFightLauncher.Helpers
                 Directory.CreateDirectory(gameDirectory);
             }
 
-            return await ApiHelper.DownloadFileAsync(release.Assets.First().BrowserDownloadUrl, Path.Combine(GameInstallDirectory, "ffbuild.zip"));
+            return await ApiHelper.DownloadFileAsync(release.Assets.First().BrowserDownloadUrl, Path.Combine(GameInstallDirectory, "ffbuild.zip"), progressReporter);
         }
 
         public async Task InstallGame(Release release, string savedFile)

@@ -35,8 +35,14 @@ namespace FruitFightLauncher
 
             if (!fileHelper.Settings.GameInstalled || fileHelper.Settings.GameVersionId != latestRelease.Id)
             {
-                statusText.Text = "Downloading latest release";
-                string savedFile = await fileHelper.DownloadGame(latestRelease);
+                statusText.Text = "Starting download";
+
+                ProgressReporter progressReporter = new ProgressReporter();
+                progressReporter.OnDownloadProgressChanged += DownloadProgressChanged;
+
+                string savedFile = await fileHelper.DownloadGame(latestRelease, progressReporter);
+
+                progressReporter.OnDownloadProgressChanged -= DownloadProgressChanged;
 
                 statusText.Text = "Unpacking";
                 await fileHelper.InstallGame(latestRelease, savedFile);       
@@ -47,6 +53,11 @@ namespace FruitFightLauncher
             Process.Start(Path.Combine(fileHelper.GameInstallDirectory, "FFBuild", "FruitFight.exe"));
 
             Close();
+        }
+
+        private void DownloadProgressChanged(int newProgress)
+        {
+            statusText.Text = string.Format("Downloading latest release: {0}%", newProgress.ToString().PadLeft(2, '0'));
         }
     }
 }

@@ -234,6 +234,7 @@
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\Author.cs" />
     <Compile Include="Models\InstallationSettings.cs" />
+    <Compile Include="Models\ProgressReporter.cs" />
     <Compile Include="Models\Release.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

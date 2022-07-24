@@ -16,6 +16,7 @@ namespace FruitFightLauncher.Helpers
         private const string releasesUrl = "https://api.github.com/repos/adamtovatt/fruitfight/releases";
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly WebClient webClient = new WebClient();
+        private static ProgressReporter progressReporter;
 
         public static async Task<string> GetAsync(string uri)
         {
@@ -48,10 +49,18 @@ namespace FruitFightLauncher.Helpers
             return JsonConvert.DeserializeObject<List<Release>>(json);
         }
 
-        public async static Task<string> DownloadFileAsync(Uri fileUri, string savePath)
+        public async static Task<string> DownloadFileAsync(Uri fileUri, string savePath, ProgressReporter progress)
         {
+            progressReporter = progress;
+            webClient.DownloadProgressChanged += DownloadProgressChanged;
             await webClient.DownloadFileTaskAsync(fileUri, savePath);
+            webClient.DownloadProgressChanged -= DownloadProgressChanged;
             return savePath;
+        }
+
+        private static void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs progressArguments)
+        {
+            progressReporter.ReportProgress(progressArguments.ProgressPercentage);
         }
     }
 }
